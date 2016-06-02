@@ -1,0 +1,34 @@
+C51 COMPILER V9.54   PROJECT                                                               06/02/2016 12:01:56 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE PROJECT
+OBJECT MODULE PLACED IN .\Objects\project.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE project.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\p
+                    -roject.lst) TABS(2) OBJECT(.\Objects\project.obj)
+
+line level    source
+
+   1          #include <AT898252.h>
+   2          
+   3          void main () {
+   4   1        int a = 0;
+   5   1        while (1) {
+   6   2          a++;
+   7   2          P0 = a;
+   8   2        }
+   9   1        
+  10   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     12    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
