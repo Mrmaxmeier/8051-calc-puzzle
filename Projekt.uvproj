@@ -368,6 +368,11 @@
               <FileType>1</FileType>
               <FilePath>.\project.c</FilePath>
             </File>
+            <File>
+              <FileName>LCD.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LCD.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
