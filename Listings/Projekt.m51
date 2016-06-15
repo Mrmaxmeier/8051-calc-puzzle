@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        06/02/2016  12:01:56  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        06/15/2016  10:44:47  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
@@ -11,6 +11,11 @@ MEMORY MODEL: SMALL
 INPUT MODULES INCLUDED:
   .\Objects\project.obj (PROJECT)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?CLDPTR)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?SIDIV)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (RAND)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?UIDIV)
 
 
 LINK MAP OF MODULE:  .\Objects\Projekt (PROJECT)
@@ -21,24 +26,68 @@ LINK MAP OF MODULE:  .\Objects\Projekt (PROJECT)
 
             * * * * * * *   D A T A   M E M O R Y   * * * * * * *
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
-            IDATA   0008H     0001H     UNIT         ?STACK
+            DATA    0008H     0015H     UNIT         ?DT?PROJECT
+            DATA    001DH     0004H     UNIT         ?DT?RAND?RAND
+            DATA    0021H     0003H     UNIT         ?DT?_TEXTLCD?PROJECT
+            DATA    0024H     0001H     UNIT         _DATA_GROUP_
+            IDATA   0025H     0001H     UNIT         ?STACK
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
                     0003H     07FDH                  *** GAP ***
-            CODE    0800H     000CH     UNIT         ?PR?MAIN?PROJECT
-            CODE    080CH     000CH     UNIT         ?C_C51STARTUP
+            CODE    0800H     00E6H     UNIT         ?PR?GENERATE?PROJECT
+            CODE    08E6H     00A4H     UNIT         ?C?LIB_CODE
+            CODE    098AH     008CH     UNIT         ?C_C51STARTUP
+            CODE    0A16H     004DH     UNIT         ?PR?RAND?RAND
+            CODE    0A63H     0037H     UNIT         ?PR?INITLCD?PROJECT
+            CODE    0A9AH     0036H     UNIT         ?PR?_TEXTLCD?PROJECT
+            CODE    0AD0H     0035H     UNIT         ?PR?MAIN?PROJECT
+            CODE    0B05H     0027H     UNIT         ?PR?_CHARLCD?PROJECT
+            CODE    0B2CH     0025H     UNIT         ?PR?_LCDBEFEHL?PROJECT
+            CODE    0B51H     0014H     UNIT         ?C_INITSEG
+            CODE    0B65H     0007H     UNIT         ?PR?_CURSORPOS?PROJECT
+            CODE    0B6CH     0005H     UNIT         ?PR?LOESCHENLCD?PROJECT
+            CODE    0B71H     0005H     UNIT         ?PR?CURSORHOME?PROJECT
+            CODE    0B76H     0005H     UNIT         ?PR?CURSORAN?PROJECT
+            CODE    0B7BH     0005H     UNIT         ?PR?CURSORAUS?PROJECT
+            CODE    0B80H     0003H     UNIT         ?PR?_WARTE100U?PROJECT
+            CODE    0B83H     0001H     UNIT         ?PR?CHECK?PROJECT
 
 
 
 OVERLAY MAP OF MODULE:   .\Objects\Projekt (PROJECT)
 
 
-SEGMENT
-  +--> CALLED SEGMENT
----------------------
-?C_C51STARTUP
+SEGMENT                           DATA_GROUP 
+BL51 BANKED LINKER/LOCATER V6.22                                                      06/15/2016  10:44:47  PAGE 2
+
+
+  +--> CALLED SEGMENT           START    LENGTH
+-----------------------------------------------
+?C_C51STARTUP                   -----    -----
   +--> ?PR?MAIN?PROJECT
+  +--> ?C_INITSEG
+
+?PR?MAIN?PROJECT                -----    -----
+  +--> ?PR?RAND?RAND
+  +--> ?PR?GENERATE?PROJECT
+  +--> ?PR?INITLCD?PROJECT
+  +--> ?PR?_CHARLCD?PROJECT
+
+?PR?GENERATE?PROJECT            -----    -----
+  +--> ?PR?RAND?RAND
+
+?PR?INITLCD?PROJECT             -----    -----
+  +--> ?PR?_WARTE100U?PROJECT
+  +--> ?PR?_LCDBEFEHL?PROJECT
+
+?PR?_WARTE100U?PROJECT          0024H    0001H
+
+?PR?_LCDBEFEHL?PROJECT          -----    -----
+  +--> ?PR?_WARTE100U?PROJECT
+
+?PR?_CHARLCD?PROJECT            -----    -----
+  +--> ?PR?_WARTE100U?PROJECT
 
 
 
@@ -49,27 +98,238 @@ SYMBOL TABLE OF MODULE:  .\Objects\Projekt (PROJECT)
 
   -------         MODULE        PROJECT
   C:0000H         SYMBOL        _ICE_DUMMY_
-  D:0080H         PUBLIC        P0
-  C:0800H         PUBLIC        main
-  -------         PROC          MAIN
+  C:0B83H         PUBLIC        check
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:0008H         PUBLIC        solution
+  C:0B6CH         PUBLIC        loeschenlcd
+  D:0009H         PUBLIC        rechendata
+  C:0AD0H         PUBLIC        main
+  C:0B80H         PUBLIC        _warte100u
+  C:0B2CH         PUBLIC        _LCDbefehl
+  C:0B71H         PUBLIC        cursorhome
+  C:0800H         PUBLIC        generate
+  D:0014H         PUBLIC        tmp
+  C:0B05H         PUBLIC        _charlcd
+  C:0A63H         PUBLIC        initlcd
+  C:0B7BH         PUBLIC        cursoraus
+  D:0016H         PUBLIC        gen_eq
+  C:0B76H         PUBLIC        cursoran
+  D:0018H         PUBLIC        gen_in
+  C:0B65H         PUBLIC        _cursorpos
+  D:001AH         PUBLIC        LCD_PORT
+  D:001BH         PUBLIC        gen_op
+BL51 BANKED LINKER/LOCATER V6.22                                                      06/15/2016  10:44:47  PAGE 3
+
+
+  C:0A9AH         PUBLIC        _textlcd
+  -------         PROC          _WARTE100U
+  D:0024H         SYMBOL        anzahl
+  C:0B80H         LINE#         16
+  C:0B82H         LINE#         17
+  C:0B82H         LINE#         24
+  -------         ENDPROC       _WARTE100U
+  -------         PROC          _LCDBEFEHL
+  D:0006H         SYMBOL        befehl
   -------         DO            
-  D:0006H         SYMBOL        a
+  D:0007H         SYMBOL        a1
   -------         ENDDO         
-  C:0800H         LINE#         3
-  C:0800H         LINE#         4
-  C:0803H         LINE#         5
-  C:0803H         LINE#         6
-BL51 BANKED LINKER/LOCATER V6.22                                                      06/02/2016  12:01:56  PAGE 2
+  C:0B2CH         LINE#         30
+  C:0B2EH         LINE#         31
+  C:0B2EH         LINE#         33
+  C:0B2EH         LINE#         34
+  C:0B37H         LINE#         36
+  C:0B3BH         LINE#         37
+  C:0B3DH         LINE#         38
+  C:0B40H         LINE#         39
+  C:0B42H         LINE#         40
+  C:0B47H         LINE#         41
+  C:0B49H         LINE#         42
+  C:0B4CH         LINE#         57
+  -------         ENDPROC       _LCDBEFEHL
+  -------         PROC          INITLCD
+  C:0A63H         LINE#         63
+  C:0A63H         LINE#         64
+  C:0A63H         LINE#         65
+  C:0A66H         LINE#         66
+  C:0A69H         LINE#         67
+  C:0A6EH         LINE#         68
+  C:0A71H         LINE#         69
+  C:0A74H         LINE#         70
+  C:0A79H         LINE#         71
+  C:0A7CH         LINE#         72
+  C:0A7FH         LINE#         73
+  C:0A82H         LINE#         74
+  C:0A85H         LINE#         75
+  C:0A88H         LINE#         76
+  C:0A8BH         LINE#         77
+  C:0A90H         LINE#         78
+  C:0A95H         LINE#         79
+  -------         ENDPROC       INITLCD
+  -------         PROC          LOESCHENLCD
+  C:0B6CH         LINE#         85
+  C:0B6CH         LINE#         86
+  -------         ENDPROC       LOESCHENLCD
+  -------         PROC          _CHARLCD
+  D:0006H         SYMBOL        zeichen
+  -------         DO            
+  D:0007H         SYMBOL        a1
+  -------         ENDDO         
+  C:0B05H         LINE#         92
+  C:0B07H         LINE#         93
+  C:0B07H         LINE#         95
+  C:0B07H         LINE#         96
+BL51 BANKED LINKER/LOCATER V6.22                                                      06/15/2016  10:44:47  PAGE 4
 
 
-  C:0808H         LINE#         7
-  C:080AH         LINE#         8
+  C:0B10H         LINE#         98
+  C:0B14H         LINE#         99
+  C:0B16H         LINE#         100
+  C:0B1AH         LINE#         101
+  C:0B1CH         LINE#         102
+  C:0B21H         LINE#         103
+  C:0B23H         LINE#         104
+  C:0B27H         LINE#         119
+  -------         ENDPROC       _CHARLCD
+  -------         PROC          _CURSORPOS
+  D:0007H         SYMBOL        position
+  C:0B65H         LINE#         126
+  C:0B65H         LINE#         127
+  C:0B65H         LINE#         128
+  -------         ENDPROC       _CURSORPOS
+  -------         PROC          CURSORHOME
+  C:0B71H         LINE#         134
+  C:0B71H         LINE#         135
+  -------         ENDPROC       CURSORHOME
+  -------         PROC          CURSORAN
+  C:0B76H         LINE#         138
+  C:0B76H         LINE#         139
+  -------         ENDPROC       CURSORAN
+  -------         PROC          CURSORAUS
+  C:0B7BH         LINE#         142
+  C:0B7BH         LINE#         143
+  -------         ENDPROC       CURSORAUS
+  -------         PROC          _TEXTLCD
+  D:0021H         SYMBOL        text
+  D:0005H         SYMBOL        zeile
+  C:0A9AH         LINE#         149
+  C:0AA0H         LINE#         151
+  C:0AA0H         LINE#         152
+  C:0AA7H         LINE#         153
+  C:0AACH         LINE#         154
+  C:0AB7H         LINE#         155
+  C:0AB7H         LINE#         156
+  C:0AC8H         LINE#         157
+  C:0ACDH         LINE#         158
+  C:0ACFH         LINE#         159
+  -------         ENDPROC       _TEXTLCD
+  -------         PROC          GENERATE
+  C:0800H         LINE#         18
+  C:0800H         LINE#         19
+  C:0805H         LINE#         20
+  C:0810H         LINE#         21
+  C:0816H         LINE#         22
+  C:0823H         LINE#         23
+  C:082AH         LINE#         24
+  C:0832H         LINE#         25
+  C:0834H         LINE#         26
+  C:0849H         LINE#         27
+  C:0849H         LINE#         28
+  C:084FH         LINE#         29
+  C:0851H         LINE#         30
+  C:0864H         LINE#         31
+  C:086BH         LINE#         32
+BL51 BANKED LINKER/LOCATER V6.22                                                      06/15/2016  10:44:47  PAGE 5
+
+
+  C:0873H         LINE#         33
+  C:0875H         LINE#         34
+  C:088DH         LINE#         35
+  C:088DH         LINE#         36
+  C:0894H         LINE#         37
+  C:0896H         LINE#         38
+  C:0896H         LINE#         39
+  C:089DH         LINE#         40
+  C:089FH         LINE#         41
+  C:089FH         LINE#         42
+  C:08A7H         LINE#         43
+  C:08ADH         LINE#         45
+  C:08ADH         LINE#         46
+  C:08B4H         LINE#         47
+  C:08BCH         LINE#         48
+  C:08BCH         LINE#         49
+  C:08BCH         LINE#         50
+  C:08BCH         LINE#         51
+  C:08C1H         LINE#         52
+  C:08C1H         LINE#         53
+  C:08D7H         LINE#         54
+  C:08E5H         LINE#         55
+  -------         ENDPROC       GENERATE
+  -------         PROC          CHECK
+  C:0B83H         LINE#         57
+  C:0B83H         LINE#         59
+  -------         ENDPROC       CHECK
+  -------         PROC          MAIN
+  C:0AD0H         LINE#         61
+  C:0AD0H         LINE#         62
+  C:0ADAH         LINE#         63
+  C:0ADDH         LINE#         65
+  C:0AE0H         LINE#         66
+  C:0AE3H         LINE#         67
+  C:0AE6H         LINE#         68
+  C:0AE9H         LINE#         69
+  C:0AEDH         LINE#         70
+  C:0AEDH         LINE#         71
+  C:0AF6H         LINE#         72
+  C:0AF8H         LINE#         73
+  C:0AF8H         LINE#         74
+  C:0AFBH         LINE#         75
+  C:0B03H         LINE#         76
   -------         ENDPROC       MAIN
   -------         ENDMOD        PROJECT
 
+  -------         MODULE        ?C?CLDPTR
+  C:08E6H         PUBLIC        ?C?CLDPTR
+  -------         ENDMOD        ?C?CLDPTR
+
+  -------         MODULE        ?C?SIDIV
+  C:08FFH         PUBLIC        ?C?SIDIV
+  -------         ENDMOD        ?C?SIDIV
+
+  -------         MODULE        RAND
+  D:001DH         PUBLIC        ?SRAND?BYTE
+  C:0A16H         PUBLIC        RAND
+BL51 BANKED LINKER/LOCATER V6.22                                                      06/15/2016  10:44:47  PAGE 6
+
+
+  C:0A58H         PUBLIC        _SRAND
+  -------         ENDMOD        RAND
+
+  -------         MODULE        ?C?UIDIV
+  C:0935H         PUBLIC        ?C?UIDIV
+  -------         ENDMOD        ?C?UIDIV
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?LOESCHENLCD?PROJECT
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?CURSORHOME?PROJECT
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?CURSORAN?PROJECT
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?CURSORAUS?PROJECT
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_TEXTLCD?PROJECT
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?CHECK?PROJECT
+
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 000CH BYTE ( 0%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0206H BYTE (25%) *
 ******************************************************************************
 
-Program Size: data=9.0 xdata=0 code=27
-LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
+Program Size: data=38.0 xdata=0 code=903
+LINK/LOCATE RUN COMPLETE.  6 WARNING(S),  0 ERROR(S)

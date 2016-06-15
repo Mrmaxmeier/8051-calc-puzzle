@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   PROJECT                                                               06/02/2016 12:01:56 PAGE 1   
+C51 COMPILER V9.54   PROJECT                                                               06/15/2016 10:44:47 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE PROJECT
@@ -10,25 +10,96 @@ line level    source
 
    1          #include <AT898252.h>
    2          
-   3          void main () {
-   4   1        int a = 0;
-   5   1        while (1) {
-   6   2          a++;
-   7   2          P0 = a;
-   8   2        }
-   9   1        
-  10   1      }
+   3          #include <stdlib.h>
+   4          #include <LCD.c>
+*** WARNING C280 IN LINE 16 OF LCD.c: 'anzahl': unreferenced local variable
+   5          
+   6          //int rand_cache = 0xFFFF;
+   7          //int rand_bits_left = 0;
+   8          //char rand_u4() {}
+   9          
+  10          char solution = 0;
+  11          
+  12          char rechendata[11];
+  13          int tmp = 0;
+  14          int gen_op = 0; // <- boolean
+  15          int gen_eq = 0;
+  16          int gen_in = 0;
+  17          
+  18          void generate() {
+  19   1        for (tmp = 0; tmp < 11; tmp++) {
+  20   2          P2 = tmp << 4;
+  21   2          if (gen_op == 0) {
+  22   3            if (gen_in == 0 && rand() & 0x1 == 1) {
+  23   4              rechendata[tmp] = '_';
+  24   4              gen_in++;
+  25   4            } else {
+  26   4              rechendata[tmp] = '0' + rand() % 9;
+  27   4            }
+  28   3            gen_op = 1;
+  29   3          } else {
+  30   3            if (tmp > 7 && gen_eq == 0) {
+  31   4                rechendata[tmp] = '=';
+  32   4                gen_eq++;
+  33   4            } else {
+  34   4              switch (rand() % 3) {
+  35   5                case 0:
+  36   5                  rechendata[tmp] = '+';
+  37   5                  break;
+  38   5                case 1:
+  39   5                  rechendata[tmp] = '-';
+  40   5                  break;
+  41   5                case 2:
+  42   5                  if (gen_eq == 1) {
+  43   6                    rechendata[tmp] = 0;
+  44   6                    return;
+  45   6                  }
+  46   5                  rechendata[tmp] = '=';
+  47   5                  gen_eq++;
+  48   5                  break;
+  49   5              }
+  50   4            }
+  51   3            gen_op = 0;
+  52   3          }
+  53   2        }
+C51 COMPILER V9.54   PROJECT                                                               06/15/2016 10:44:47 PAGE 2   
+
+  54   1        rechendata[tmp++] = 0;
+  55   1      }
+  56          
+  57          void check() {
+  58   1        
+  59   1      }
+  60          
+  61          void main() {
+  62   1        srand(P2&0xF);
+  63   1        P2 = P2&0xF >> 4;
+  64   1        
+  65   1        generate();
+  66   1        P2 = 0xF0;
+  67   1        initlcd();
+  68   1        P2 = 0x00;
+  69   1        tmp = 0;
+  70   1        while (1) {
+  71   2          if (rechendata[tmp] == 0) {
+  72   3            while(1){}
+  73   3          }
+  74   2          charlcd(rechendata[tmp]);
+  75   2          tmp++;
+  76   2        }
+  77   1        
+  78   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     12    ----
+   CODE SIZE        =    499    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----    ----
+   DATA SIZE        =     21       4
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
