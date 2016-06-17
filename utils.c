@@ -50,3 +50,12 @@ void display_num(char c) {
 	
 	charlcd('0' + c);
 }
+
+char hex_i;
+char get_hex_input() {
+	while (P0 == 0) {}
+	while (P0 != 0) {
+		hex_i = P0;
+	}
+	return hex_i;
+}
