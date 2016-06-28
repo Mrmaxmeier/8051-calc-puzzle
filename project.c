@@ -149,7 +149,7 @@ void main() {
 		halt();
 	}
 	charlcd('>');
-	display_num(tmp);
+	display_num(solution);
 	
 	cursorpos(0x40);
 	textlcd("PRESS A KEY!   ", 2);

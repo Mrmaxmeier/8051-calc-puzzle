@@ -53,8 +53,8 @@ void display_num(char c) {
 
 char hex_i;
 char get_hex_input() {
-	while (P0 == 0) {}
-	while (P0 != 0) {
+	while (P0 == 0xFF) {}
+	while (P0 != 0xFF) {
 		hex_i = P0;
 	}
 	return hex_i;
