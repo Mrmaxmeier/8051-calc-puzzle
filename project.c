@@ -1,7 +1,9 @@
 #include <AT898252.h>
-
 #include <utils.c>
+// #define DEBUG 1
 
+
+char solution = 0xFF;
 
 char rightside[5];
 char leftside[5];
@@ -88,6 +90,8 @@ unsigned char generate_with_solution() {
 		generate();
 		loeschenlcd();
 		cursorhome();
+		rightside_val = calc(&rightside, 0);
+		#ifdef DEBUG
 		for (tmp = 0; tmp < 5; tmp++) {
 			charlcd(leftside[tmp]);
 		}
@@ -100,9 +104,9 @@ unsigned char generate_with_solution() {
 			charlcd(rightside[tmp]);
 		}
 		charlcd('=');
-		rightside_val = calc(&rightside, 0);
 		display_num(rightside_val);
 		charlcd(' ');
+		#endif
 		// hacky optimization for '+' and '-'
 		P2 = 0;
 		tmp = calc(&leftside, 0) - rightside_val;
@@ -118,9 +122,13 @@ unsigned char generate_with_solution() {
 		}
 		
 		for (tmp2 = 1; tmp2 < 9; tmp2++) {
+			#ifdef DEBUG
 			P2 = tmp2 << 4;
+			#endif
 			if (calc(&leftside, tmp2) == rightside_val) {
+				#ifdef DEBUG
 				display_num(tmp2);
+				#endif
 				return tmp2;
 			}
 		}
@@ -138,33 +146,41 @@ void main() {
 	initlcd();
 	P2 = 0x00;
 	
-	
-	//display_num(calc("3+7-6"));
-	//halt();
-	
 	while (1) {
 	solution = generate_with_solution();
+
+	for (tmp = 0; tmp < 5; tmp++) {
+		charlcd(leftside[tmp]);
+	}
+	charlcd('=');
+	for (tmp = 0; tmp < 5; tmp++) {
+		charlcd(rightside[tmp]);
+	}
+
 	if (solution == 0xFF) {
 		cursorpos(0x40);
 		textlcd("NO SOLUTION", 2);
 		halt();
 	}
+
+	#ifdef DEBUG
 	charlcd('>');
 	display_num(solution);
+	#endif
 	
 	cursorpos(0x40);
 	textlcd("PRESS A KEY!   ", 2);
-	display_num(solution);
+	
 	user_input = get_hex_input();
-	loeschenlcd();
+	// loeschenlcd();
 	if (user_input == solution) {
-		textlcd("\\ :)", 1);
+		textlcd("\\ :)        ", 2);
 	} else {
-		textlcd("/ :(", 1);
+		textlcd("/ :(  _ = ", 2);
+		display_num(solution);
 	}
-	
-	
-	
-	
+	for (tmp = 0; tmp < 4; tmp++) {
+	  textlcd(' ');
+	}
 	}
 }
