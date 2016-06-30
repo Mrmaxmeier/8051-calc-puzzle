@@ -2,7 +2,6 @@
 
 #include <utils.c>
 
-char solution = 0xFF;
 
 char rightside[5];
 char leftside[5];
@@ -119,7 +118,7 @@ unsigned char generate_with_solution() {
 		}
 		
 		for (tmp2 = 1; tmp2 < 9; tmp2++) {
-			P2 = tmp << 4;
+			P2 = tmp2 << 4;
 			if (calc(&leftside, tmp2) == rightside_val) {
 				display_num(tmp2);
 				return tmp2;
@@ -130,6 +129,7 @@ unsigned char generate_with_solution() {
 }
 
 char solution;
+char user_input;
 void main() {
 	srand(P2&0xF);
 	P2 = P2&0xF >> 4;
@@ -138,8 +138,9 @@ void main() {
 	initlcd();
 	P2 = 0x00;
 	
-	// display_num(-112);
-	// halt();
+	
+	//display_num(calc("3+7-6"));
+	//halt();
 	
 	while (1) {
 	solution = generate_with_solution();
@@ -153,10 +154,10 @@ void main() {
 	
 	cursorpos(0x40);
 	textlcd("PRESS A KEY!   ", 2);
-	
-	tmp = get_hex_input();
+	display_num(solution);
+	user_input = get_hex_input();
 	loeschenlcd();
-	if (tmp == solution) {
+	if (user_input == solution) {
 		textlcd("\\ :)", 1);
 	} else {
 		textlcd("/ :(", 1);

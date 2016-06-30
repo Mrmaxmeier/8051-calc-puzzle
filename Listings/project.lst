@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   PROJECT                                                               06/15/2016 10:44:47 PAGE 1   
+C51 COMPILER V9.54   PROJECT                                                               06/30/2016 11:53:32 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE PROJECT
@@ -10,96 +10,193 @@ line level    source
 
    1          #include <AT898252.h>
    2          
-   3          #include <stdlib.h>
-   4          #include <LCD.c>
+   3          #include <utils.c>
 *** WARNING C280 IN LINE 16 OF LCD.c: 'anzahl': unreferenced local variable
+   4          
    5          
-   6          //int rand_cache = 0xFFFF;
-   7          //int rand_bits_left = 0;
-   8          //char rand_u4() {}
-   9          
-  10          char solution = 0;
-  11          
-  12          char rechendata[11];
-  13          int tmp = 0;
-  14          int gen_op = 0; // <- boolean
-  15          int gen_eq = 0;
-  16          int gen_in = 0;
+   6          char rightside[5];
+   7          char leftside[5];
+   8          int tmp = 0;
+   9          int tmp2 = 0;
+  10          int gen_op = 0; // <- boolean, next char is op
+  11          int gen_in = 0; // amount input
+  12          
+  13          int calc_current; 
+  14          char calc_last_op;
+  15          char calc_curr_num;
+  16          // TODO: split up in multiple c files
   17          
-  18          void generate() {
-  19   1        for (tmp = 0; tmp < 11; tmp++) {
-  20   2          P2 = tmp << 4;
-  21   2          if (gen_op == 0) {
-  22   3            if (gen_in == 0 && rand() & 0x1 == 1) {
-  23   4              rechendata[tmp] = '_';
-  24   4              gen_in++;
-  25   4            } else {
-  26   4              rechendata[tmp] = '0' + rand() % 9;
-  27   4            }
-  28   3            gen_op = 1;
-  29   3          } else {
-  30   3            if (tmp > 7 && gen_eq == 0) {
-  31   4                rechendata[tmp] = '=';
-  32   4                gen_eq++;
-  33   4            } else {
-  34   4              switch (rand() % 3) {
-  35   5                case 0:
-  36   5                  rechendata[tmp] = '+';
-  37   5                  break;
-  38   5                case 1:
-  39   5                  rechendata[tmp] = '-';
-  40   5                  break;
-  41   5                case 2:
-  42   5                  if (gen_eq == 1) {
-  43   6                    rechendata[tmp] = 0;
-  44   6                    return;
-  45   6                  }
-  46   5                  rechendata[tmp] = '=';
-  47   5                  gen_eq++;
-  48   5                  break;
-  49   5              }
-  50   4            }
-  51   3            gen_op = 0;
-  52   3          }
-  53   2        }
-C51 COMPILER V9.54   PROJECT                                                               06/15/2016 10:44:47 PAGE 2   
+  18          int calc(char *dat, char replacement) {
+  19   1        // oh shit waddup
+  20   1        calc_current = char_to_int(*dat);
+*** WARNING C209 IN LINE 20 OF project.c: '_char_to_int': too few actual parameters
+  21   1        dat++;
+  22   1        calc_last_op = *dat;
+  23   1        dat++;
+  24   1        for (tmp = 0; tmp < 3; tmp++) {
+  25   2          /*charlcd('!');
+  26   2          charlcd(calc_last_op);
+  27   2          charlcd(':');*/
+  28   2          calc_curr_num = char_to_int(*dat, replacement);
+  29   2          // display_num(calc_curr_num);
+  30   2          switch (calc_last_op) {
+  31   3            case '+':
+  32   3              calc_current += calc_curr_num;
+  33   3              break;
+  34   3            case '-':
+  35   3              calc_current -= calc_curr_num;
+  36   3              break;
+  37   3          }
+  38   2          dat++;
+  39   2          calc_last_op = *dat;
+  40   2          dat++;
+  41   2        }
+  42   1        return calc_current;
+  43   1      }
+  44          
+  45          char gen_opc() {
+  46   1        switch (rand_u4() % 2) {
+  47   2          case 0:
+  48   2            return '+';
+  49   2          case 1:
+  50   2            return '-';
+  51   2        }
+  52   1        return '?';
+C51 COMPILER V9.54   PROJECT                                                               06/30/2016 11:53:32 PAGE 2   
 
-  54   1        rechendata[tmp++] = 0;
-  55   1      }
-  56          
-  57          void check() {
-  58   1        
-  59   1      }
-  60          
-  61          void main() {
-  62   1        srand(P2&0xF);
-  63   1        P2 = P2&0xF >> 4;
-  64   1        
-  65   1        generate();
-  66   1        P2 = 0xF0;
-  67   1        initlcd();
-  68   1        P2 = 0x00;
-  69   1        tmp = 0;
-  70   1        while (1) {
-  71   2          if (rechendata[tmp] == 0) {
-  72   3            while(1){}
-  73   3          }
-  74   2          charlcd(rechendata[tmp]);
-  75   2          tmp++;
-  76   2        }
-  77   1        
-  78   1      }
+  53   1      }
+  54          
+  55          char gen_val() {
+  56   1        if (gen_in == 0 && (rand_u4() & 0x11 == 2 || tmp > 6)) {
+  57   2          gen_in++;
+  58   2          return '_';
+  59   2        } else {
+  60   2          return '1' + rand_u4() % 8;
+  61   2        }
+  62   1      }
+  63          
+  64          void generate() {
+  65   1        gen_op = 0;
+  66   1        gen_in = 0;
+  67   1        for (tmp = 0; tmp < 5; tmp++) {
+  68   2          if (gen_op == 0) {
+  69   3            if (gen_in == 0 && tmp > 3) {
+  70   4              leftside[tmp] = '_';
+  71   4              gen_in++;
+  72   4            } else {
+  73   4              leftside[tmp] = gen_val();
+  74   4            }
+  75   3            rightside[tmp] = gen_val();
+  76   3            gen_op = 1;
+  77   3          } else {
+  78   3            leftside[tmp] = gen_opc();
+  79   3            rightside[tmp] = gen_opc();
+  80   3            gen_op = 0;
+  81   3          }
+  82   2        }
+  83   1      }
+  84          
+  85          int rightside_val;
+  86          unsigned char generate_with_solution() {
+  87   1        while (1) {
+  88   2          generate();
+  89   2          loeschenlcd();
+  90   2          cursorhome();
+  91   2          for (tmp = 0; tmp < 5; tmp++) {
+  92   3            charlcd(leftside[tmp]);
+  93   3          }
+  94   2          charlcd('=');
+  95   2          for (tmp = 0; tmp < 5; tmp++) {
+  96   3            charlcd(rightside[tmp]);
+  97   3          }
+  98   2          cursorpos(0x40);
+  99   2          for (tmp = 0; tmp < 5; tmp++) {
+ 100   3            charlcd(rightside[tmp]);
+ 101   3          }
+ 102   2          charlcd('=');
+ 103   2          rightside_val = calc(&rightside, 0);
+ 104   2          display_num(rightside_val);
+ 105   2          charlcd(' ');
+ 106   2          // hacky optimization for '+' and '-'
+ 107   2          P2 = 0;
+ 108   2          tmp = calc(&leftside, 0) - rightside_val;
+ 109   2          P2 = 0xFF00;
+ 110   2          if (tmp == 0) {
+ 111   3            return 0;
+ 112   3          } else if (tmp > 9) {
+ 113   3            continue;
+ 114   3            // return 0xFF;
+C51 COMPILER V9.54   PROJECT                                                               06/30/2016 11:53:32 PAGE 3   
+
+ 115   3          } else if (tmp < -9) {
+ 116   3            continue;
+ 117   3            // return 0xFF;
+ 118   3          }
+ 119   2          
+ 120   2          for (tmp2 = 1; tmp2 < 9; tmp2++) {
+ 121   3            P2 = tmp2 << 4;
+ 122   3            if (calc(&leftside, tmp2) == rightside_val) {
+ 123   4              display_num(tmp2);
+ 124   4              return tmp2;
+ 125   4            }
+ 126   3          }
+ 127   2          // return 0xFF;
+ 128   2        }
+ 129   1      }
+ 130          
+ 131          char solution;
+ 132          char user_input;
+ 133          void main() {
+ 134   1        srand(P2&0xF);
+ 135   1        P2 = P2&0xF >> 4;
+ 136   1        
+ 137   1        P2 = 0xF0;
+ 138   1        initlcd();
+ 139   1        P2 = 0x00;
+ 140   1        
+ 141   1        
+ 142   1        //display_num(calc("3+7-6"));
+ 143   1        //halt();
+ 144   1        
+ 145   1        while (1) {
+ 146   2        solution = generate_with_solution();
+ 147   2        if (solution == 0xFF) {
+ 148   3          cursorpos(0x40);
+ 149   3          textlcd("NO SOLUTION", 2);
+ 150   3          halt();
+ 151   3        }
+ 152   2        charlcd('>');
+ 153   2        display_num(solution);
+ 154   2        
+ 155   2        cursorpos(0x40);
+ 156   2        textlcd("PRESS A KEY!   ", 2);
+ 157   2        display_num(solution);
+ 158   2        user_input = get_hex_input();
+ 159   2        loeschenlcd();
+ 160   2        if (user_input == solution) {
+ 161   3          textlcd("\\ :)", 1);
+ 162   3        } else {
+ 163   3          textlcd("/ :(", 1);
+ 164   3        }
+ 165   2        
+ 166   2        
+ 167   2        
+ 168   2        
+ 169   2        }
+ 170   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    499    ----
-   CONSTANT SIZE    =   ----    ----
+   CODE SIZE        =   1219    ----
+   CONSTANT SIZE    =     38    ----
    XDATA SIZE       =   ----    ----
+C51 COMPILER V9.54   PROJECT                                                               06/30/2016 11:53:32 PAGE 4   
+
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     21       4
+   DATA SIZE        =     32       8
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)
