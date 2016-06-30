@@ -84,12 +84,21 @@ void generate() {
 	}
 }
 
+unsigned char tries;
+unsigned char* tries_text = "Loading...";
 int rightside_val;
 unsigned char generate_with_solution() {
+	tries = 0;
 	while (1) {
 		generate();
 		loeschenlcd();
 		cursorhome();
+		#ifndef DEBUG
+		tries++;
+		for (tmp = 0; tmp < tries; tmp++) {
+			charlcd(tries_text[tmp]);
+		}
+		#endif
 		rightside_val = calc(&rightside, 0);
 		#ifdef DEBUG
 		for (tmp = 0; tmp < 5; tmp++) {
@@ -148,6 +157,7 @@ void main() {
 	
 	while (1) {
 	solution = generate_with_solution();
+	loeschenlcd();
 
 	for (tmp = 0; tmp < 5; tmp++) {
 		charlcd(leftside[tmp]);
@@ -169,7 +179,7 @@ void main() {
 	#endif
 	
 	cursorpos(0x40);
-	textlcd("PRESS A KEY!   ", 2);
+	textlcd("PRESS A KEY!    ", 2);
 	
 	user_input = get_hex_input();
 	// loeschenlcd();
@@ -179,7 +189,7 @@ void main() {
 		textlcd("/ :(  _ = ", 2);
 		display_num(solution);
 	}
-	for (tmp = 0; tmp < 4; tmp++) {
+	for (tmp = 0; tmp < 5; tmp++) {
 	  textlcd(' ');
 	}
 	}
