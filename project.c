@@ -1,6 +1,6 @@
 #include <AT898252.h>
 #include <utils.c>
-// #define DEBUG 1
+// #define DEBUG
 
 
 char solution = 0xFF;
@@ -184,13 +184,13 @@ void main() {
 	user_input = get_hex_input();
 	// loeschenlcd();
 	if (user_input == solution) {
-		textlcd("\\ :)        ", 2);
+		textlcd("\\ :)", 2);
 	} else {
 		textlcd("/ :(  _ = ", 2);
 		display_num(solution);
 	}
 	for (tmp = 0; tmp < 5; tmp++) {
-	  textlcd(' ');
+	  charlcd(' ');
 	}
 	}
 }
