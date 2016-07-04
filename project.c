@@ -17,6 +17,8 @@ char calc_last_op;
 char calc_curr_num;
 // TODO: split up in multiple c files
 
+void display_computation();
+
 int calc(char *dat, char replacement) {
 	// oh shit waddup
 	calc_current = char_to_int(*dat);
@@ -87,10 +89,60 @@ void generate() {
 unsigned char tries;
 unsigned char* tries_text = "Loading...";
 int rightside_val;
+int tmp3;
 unsigned char generate_with_solution() {
 	tries = 0;
 	while (1) {
 		generate();
+		display_computation();
+		// hacky optimization for '+' and '-'
+		P2 = 0;
+		tmp = calc(&leftside, 0) - rightside_val;
+		P2 = 0xFF00;
+		if (tmp == 0) {
+			return 0;
+		} else if (tmp > 9) {
+			continue;
+			// return 0xFF;
+		} else if (tmp < -9) {
+			continue;
+			// return 0xFF;
+		}
+		
+		tmp3 = calc(&leftside, 0) - rightside_val;
+		if (leftside[3] == '+' && tmp3 < 10 && tmp3 > -10) {
+			if (tmp3 > 0) {
+				leftside[3] = '-';
+				display_computation();
+				return tmp3;
+			}
+			return -tmp3;
+		} else if (leftside[3] == '-' && tmp3 > -10 && tmp3 < 10) {
+			if (tmp3 < 0) {
+				leftside[3] = '+';
+				display_computation();
+				return -tmp3;
+			}
+			return tmp3;
+		}
+		/*for (tmp2 = 1; tmp2 < 9; tmp2++) {
+			#ifdef DEBUG
+			P2 = tmp2 << 4;
+			#endif
+			if (calc(&leftside, tmp2) == rightside_val) {
+				#ifdef DEBUG
+				display_num(tmp2);
+				#endif
+				return tmp2;
+			}
+		}*/
+		
+		
+		// return 0xFF;
+	}
+}
+
+void display_computation() {
 		loeschenlcd();
 		cursorhome();
 		#ifndef DEBUG
@@ -116,33 +168,6 @@ unsigned char generate_with_solution() {
 		display_num(rightside_val);
 		charlcd(' ');
 		#endif
-		// hacky optimization for '+' and '-'
-		P2 = 0;
-		tmp = calc(&leftside, 0) - rightside_val;
-		P2 = 0xFF00;
-		if (tmp == 0) {
-			return 0;
-		} else if (tmp > 9) {
-			continue;
-			// return 0xFF;
-		} else if (tmp < -9) {
-			continue;
-			// return 0xFF;
-		}
-		
-		for (tmp2 = 1; tmp2 < 9; tmp2++) {
-			#ifdef DEBUG
-			P2 = tmp2 << 4;
-			#endif
-			if (calc(&leftside, tmp2) == rightside_val) {
-				#ifdef DEBUG
-				display_num(tmp2);
-				#endif
-				return tmp2;
-			}
-		}
-		// return 0xFF;
-	}
 }
 
 char solution;
@@ -188,6 +213,11 @@ void main() {
 	} else {
 		textlcd("/ :(  _ = ", 2);
 		display_num(solution);
+		charlcd(' ');
+		charlcd('!');
+		charlcd('=');
+		charlcd(' ');
+		display_num(user_input);
 	}
 	for (tmp = 0; tmp < 5; tmp++) {
 	  charlcd(' ');
