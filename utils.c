@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <AT898252.h>
-#include <LCD.c>
+#include "LCD.c"
 
 #define halt() while (1) {}
 
